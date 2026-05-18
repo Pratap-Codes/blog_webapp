@@ -1,0 +1,117 @@
+import { User } from "../models/user.model.js";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+
+export const register = async (req, res) => {
+  try {
+    const { firstName, lastName, email, password } = req.body;
+    if (!firstName || !lastName || !email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "All filed are required",
+      });
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid email",
+      });
+    }
+    if (password.length < 8) {
+      console.log(password.length);
+
+      return res.status(400).json({
+        success: false,
+        message: "Password must be atleat 8 characters",
+      });
+    }
+
+    const existingUserByEmail = await User.findOne({ email: email });
+    if (existingUserByEmail)
+      return res.status(400).json({
+        success: false,
+        message: "Email already exist",
+      });
+
+    const hashPassword = await bcrypt.hash(password, 10);
+    await User.create({
+      firstName,
+      lastName,
+      email,
+      password: hashPassword,
+    });
+    return res.status(201).json({
+      success: true,
+      message: "Account created sucessfully ",
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "All fileds are required",
+      });
+    }
+    let user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "Incorrect email or password",
+      });
+    }
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(400).json({
+        success: false,
+        message: "Inavlid credentials",
+      });
+    }
+    const token = await jwt.sign({ userId: user._id }, process.env.SECRET_KEY, {
+      expiresIn: "1d",
+    });
+    return res
+      .status(200)
+      .cookie("token", token, {
+        maxAge: 1 * 24 * 60 * 60 * 1000,
+        httpOnly: true,
+        samSite: "strict",
+      })
+      .json({
+        success: true,
+        message: `Welcome back ${user.firstName}`,
+        user,
+      });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const logout = async (_, res) => {
+  try {
+    return res.status(200).cookie("token", " ", { maxAge: 0 }).json({
+      success: true,
+      message: "Logout successful",
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: false,
+      message: error.message,
+    });
+  }
+};
