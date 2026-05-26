@@ -22,8 +22,10 @@ const Navbar = () => {
     <div className="fixed w-full border-b-gray-300 bg-white dark:border-b-gray-600 dark:bg-gray-800">
       <div className="mx-auto my-2 flex h-10 w-full max-w-5xl items-center justify-between">
         {/* Logo section */}
-        <div className="flex items-center justify-center gap-1">
-          <p className="text-2xl font-semibold">Logo</p>
+        <div className="flex items-center justify-center gap-2">
+          <img src="./logo.png" alt="Logo" 
+          className="w-12 h-12 rounded-full"
+          />
           <input
             className="hidden rounded-lg border bg-gray-300 p-1 text-white md:block dark:bg-gray-700"
             type="text"
@@ -57,14 +59,14 @@ const Navbar = () => {
                 <Link
                 to={"/login"}
                 >
-                  <button className="rounded-md p-2 font-semibold dark:bg-gray-300 bg-black">
+                  <button className="rounded-md p-2 font-semibold dark:bg-gray-300 bg-black cursor-pointer">
                     Login
                   </button>
                 </Link>
                 <Link
                 to={"/signup"}
                 >
-                  <button className="rounded-md p-2 font-semibold dark:bg-gray-300 bg-black">
+                  <button className="rounded-md p-2 font-semibold dark:bg-gray-300 bg-black cursor-pointer">
                     Signup
                   </button>
                 </Link>
