@@ -5,6 +5,7 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import MainLayout from "./layout/MainLayout";
+import { Toaster } from "react-hot-toast";
 import Home from "./pages/Home";
 import Blogs from "./pages/Blogs";
 import Login from "./pages/Login";
@@ -27,6 +28,14 @@ const router = createBrowserRouter([
 const App = () => {
   return (
     <>
+    <Toaster 
+        position="top-right"
+        reverseOrder={false}
+        toastOptions={{
+          duration: 2000,
+          
+        }}
+      />
       <RouterProvider router={router} />
     </>
   );
