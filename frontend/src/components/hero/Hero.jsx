@@ -7,10 +7,10 @@ const Hero = () => {
         {/* text section */}
         <div className="max-w-2xl px-2">
           <div className="">
-            <h2 className="text-5xl font-bold">
+            <h2 className="text-5xl font-bold dark:text-white">
               Explore the Latest Tech & Web Trends
             </h2>
-            <h4 className="py-2 text-xl text-neutral-600">
+            <h4 className="py-2 text-xl text-neutral-600 dark:text-neutral-200">
               Stay ahead with in depth articles tutorials and insights on web
               development digital marketing and tech information
             </h4>
@@ -25,11 +25,11 @@ const Hero = () => {
             </button>
           </div>
         </div>
-        <div className="flex w-full items-center justify-center overflow-hidden rounded-lg md:w-auto">
+        <div className="flex w-full items-center justify-center  shadow-2xl overflow-hidden rounded-lg md:w-auto">
           <img
             src="./background.jpg"
             alt="Blog-BG"
-            className="h-[300px] w-[300px] rounded-lg object-cover md:h-[400px] md:w-[600px]"
+            className="h-[300px] w-[300px] rounded-lg shadow-2xl object-cover md:h-[400px] md:w-[600px]"
           />
         </div>
       </div>

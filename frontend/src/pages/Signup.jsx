@@ -1,12 +1,15 @@
 import React, { useCallback, useState } from "react";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaSpinner } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { setLoading } from "../redux/authSlice";
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const { loading } = useSelector((store) => store.auth);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [user, setUser] = useState({
     firstName: "",
@@ -48,7 +51,7 @@ const Signup = () => {
     e.preventDefault();
     console.log(user);
     if (!validateForm()) return;
-    setLoading(true);
+    dispatch(setLoading(true));
     try {
       const res = await axios.post(
         `http://localhost:8000/api/v1/user/register`,
@@ -72,6 +75,7 @@ const Signup = () => {
         });
         setTimeout(() => {
           navigate("/login");
+          dispatch(setLoading(false));
         }, 1500);
       } else {
         toast.error(res.data.message || "Registration failed");
@@ -90,8 +94,10 @@ const Signup = () => {
       }
 
       toast.error(errorMessage);
-    } finally{
+      dispatch(setLoading(false));
+    } finally {
       setLoading(false);
+      dispatch(setLoading(false));
     }
   };
   return (
@@ -138,7 +144,6 @@ const Signup = () => {
                 onChange={handleChange}
                 required
                 disabled={loading}
-
               />
             </div>
           </div>
@@ -152,8 +157,7 @@ const Signup = () => {
               value={user.email}
               onChange={handleChange}
               required
-                disabled={loading}
-
+              disabled={loading}
             />
           </div>
           <div className="space-y-1">
@@ -168,7 +172,6 @@ const Signup = () => {
                 onChange={handleChange}
                 required
                 disabled={loading}
-
               />
               <button
                 type="button"
@@ -182,9 +185,17 @@ const Signup = () => {
           <div className="space-y-2">
             <button
               type="submit"
+              disabled={loading}
               className="w-full cursor-pointer rounded-lg bg-blue-600 p-2 text-xl text-white hover:bg-blue-600/90"
             >
-              Sign Up
+              {loading ? (
+                <div className="flex items-center justify-center gap-2">
+                  <FaSpinner className="animate-spin" size={18} />
+                  <span>Signing wait</span>
+                </div>
+              ) : (
+                "Sign up"
+              )}
             </button>
           </div>
           <div className="flex items-center justify-center gap-2">

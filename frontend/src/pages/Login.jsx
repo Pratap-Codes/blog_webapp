@@ -1,14 +1,14 @@
 import axios from "axios";
 import React, { useState } from "react";
-import toast from "react-hot-toast";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { useDispatch } from "react-redux";
+import toast, { LoaderIcon } from "react-hot-toast";
+import { FaEye, FaEyeSlash, FaSpinner } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { setUser } from "../redux/authSlice";
-
+import { setLoading, setUser } from "../redux/authSlice";
 
 const Login = () => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  const { loading } = useSelector((store) => store.auth);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const [input, setInput] = useState({
@@ -27,6 +27,7 @@ const Login = () => {
     e.preventDefault();
 
     try {
+      dispatch(setLoading(true));
       const res = await axios.post(
         `http://localhost:8000/api/v1/user/login`,
         input,
@@ -40,12 +41,15 @@ const Login = () => {
       console.log("Response", res.data);
       if (res.data.success) {
         toast.success(res.data.message);
+        dispatch(setUser(res.data.user));
+
         setTimeout(() => {
           navigate("/");
-          dispatch(setUser(res.data.user))
+          dispatch(setLoading(false));
         }, 1500);
       } else {
         toast.error(res.data.message);
+        dispatch(setLoading(false));
       }
     } catch (error) {
       console.log("Login erro", error);
@@ -54,10 +58,12 @@ const Login = () => {
         errorMessage = error.response.data.message;
       }
       toast.error(errorMessage);
+    } finally {
+      dispatch(setLoading(false));
     }
   };
   return (
-    <div className="flex h-screen bg-gray-300 md:pt-14">
+    <div className="flex h-screen bg-gray-300 dark:bg-gray-950 md:pt-14">
       {/* Left side image - hidden on mobile */}
       <div className="hidden items-center justify-center lg:flex lg:flex-1">
         <img src="/auth.jpg" className="h-full w-full object-cover" />
@@ -88,6 +94,7 @@ const Login = () => {
               value={input.email}
               onChange={handleChange}
               required
+              disabled={loading}
             />
           </div>
           <div className="space-y-1">
@@ -103,6 +110,7 @@ const Login = () => {
                 value={input.password}
                 onChange={handleChange}
                 required
+                disabled={loading}
               />
 
               <button
@@ -117,9 +125,18 @@ const Login = () => {
           <div className="space-y-2">
             <button
               type="submit"
+              disabled={loading}
               className="w-full cursor-pointer rounded-lg bg-blue-600 p-2 text-xl text-white hover:bg-blue-600/90"
             >
-              Login
+              {loading ? (
+                <div className="flex
+                items-center justify-center gap-2">
+                  <FaSpinner className="animate-spin" size={18} />
+                  <span>Please wait</span>
+                </div>
+              ) : (
+                "Login"
+              )}
             </button>
           </div>
           <div className="flex items-center justify-center gap-2">
@@ -128,7 +145,7 @@ const Login = () => {
               to={"/signup"}
               className="underline transition-all duration-200 hover:text-gray-500"
             >
-              Sign up{" "}
+              Sign up
             </Link>
           </div>
         </form>
