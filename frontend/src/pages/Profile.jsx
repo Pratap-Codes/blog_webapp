@@ -31,7 +31,7 @@ const EditProfileDialog = ({ isOpen, onClose }) => {
     file: null,
   });
 
-  // ✅ Sync form fields whenever Redux user updates
+
   useEffect(() => {
     if (user) {
       setInput({
@@ -316,11 +316,11 @@ const Profile = () => {
 
           {/* Info */}
           <div className="flex flex-col justify-center">
-            <h1 className="mb-4 text-center text-4xl font-bold text-black md:text-start dark:text-white">
-              Welcome back, {user?.firstName}
+            <h1 className="mb-4 text-center text-3xl font-bold text-black md:text-start dark:text-white">
+              Welcome back {user?.firstName}
             </h1>
             <p>
-              <span className="text-lg font-semibold">Email: </span>
+              <span className="text-md font-semibold">Email: </span>
               {user?.email}
             </p>
             <div className="my-5 flex flex-col items-start gap-2">

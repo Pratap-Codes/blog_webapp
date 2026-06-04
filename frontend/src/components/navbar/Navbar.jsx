@@ -105,7 +105,7 @@ const Navbar = () => {
             ))}
           </ul>
 
-          <div className="flex gap-3">
+          <div className="flex gap-5">
             <button
               onClick={() => dispatch(toggleTheme())}
               className="cursor-pointer rounded-md bg-black px-3 text-gray-200 shadow-lg dark:bg-gray-300 dark:text-black"
