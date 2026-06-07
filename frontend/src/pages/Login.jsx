@@ -5,6 +5,7 @@ import { FaEye, FaEyeSlash, FaSpinner } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { setLoading, setUser } from "../redux/authSlice";
+import AuthImage from "../assets/auth.jpg"
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -66,7 +67,7 @@ const Login = () => {
     <div className="flex h-screen bg-gray-300 dark:bg-gray-950 md:pt-14">
       {/* Left side image - hidden on mobile */}
       <div className="hidden items-center justify-center lg:flex lg:flex-1">
-        <img src="/auth.jpg" className="h-full w-full object-cover" />
+        <img src={AuthImage} className="h-full w-full object-cover" />
       </div>
 
       {/* Right side form - centered */}

@@ -261,7 +261,7 @@ const Profile = () => {
   const { user } = useSelector((store) => store.auth);
 
   return (
-    <div className="min-h-screen pt-16 md:ml-[350px]">
+    <div className="min-h-screen pt-20 md:ml-[350px]">
       <div className="mx-auto mt-10 max-w-4xl px-4">
         <div className="flex flex-col gap-10 rounded-lg bg-white p-6 shadow-xl md:flex-row md:p-10 dark:bg-gray-800">
           {/* Avatar + social links */}

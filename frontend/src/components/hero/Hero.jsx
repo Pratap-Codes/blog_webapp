@@ -1,4 +1,5 @@
 import React from "react";
+import Background from "../../assets/background.jpg"
 
 const Hero = () => {
   return (
@@ -27,7 +28,7 @@ const Hero = () => {
         </div>
         <div className="flex w-full items-center justify-center  shadow-2xl overflow-hidden rounded-lg md:w-auto">
           <img
-            src="./background.jpg"
+            src={Background}
             alt="Blog-BG"
             className="h-[300px] w-[300px] rounded-lg shadow-2xl object-cover md:h-[400px] md:w-[600px]"
           />

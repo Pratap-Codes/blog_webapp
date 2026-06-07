@@ -16,7 +16,8 @@ import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import MyBlog from "./pages/MyBlog";
 import Comments from "./pages/Comments";
-import WriteBlog from "./pages/WriteBlog";
+import WriteBlog from "./pages/CreateBlog";
+import UpdateBlog from "./pages/UpdateBlog";
 
 const router = createBrowserRouter([
   {
@@ -36,6 +37,7 @@ const router = createBrowserRouter([
           { path: "my-blog", element: <MyBlog /> },
           { path: "comments", element: <Comments /> },
           { path: "write-blog", element: <WriteBlog /> },
+          { path: "write-blog/:blogId", element: <UpdateBlog /> },
         ],
       },
     ],

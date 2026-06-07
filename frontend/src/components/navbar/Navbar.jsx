@@ -16,7 +16,7 @@ import { setUser } from "../../redux/authSlice";
 import { toggleTheme } from "../../redux/themeSlice";
 import { LuNotebookPen } from "react-icons/lu";
 import { CiLogout } from "react-icons/ci";
-import logo from "../../../public/logo.png"
+import logo from "../../assets/logo.png"
 
 const Navbar = () => {
   const { user } = useSelector((store) => store.auth);

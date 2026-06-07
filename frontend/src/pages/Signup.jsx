@@ -5,7 +5,7 @@ import { toast } from "react-hot-toast";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "../redux/authSlice";
-
+import AuthImage from "../assets/auth.jpg"
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
   const { loading } = useSelector((store) => store.auth);
@@ -104,7 +104,7 @@ const Signup = () => {
     <div className="flex h-screen bg-gray-300">
       {/* Left side image - hidden on mobile */}
       <div className="hidden items-center justify-center lg:flex lg:flex-1">
-        <img src="/auth.jpg" className="h-full w-full object-cover" />
+        <img src={AuthImage} className="h-full w-full object-cover" />
       </div>
 
       {/* Right side form - centered */}
