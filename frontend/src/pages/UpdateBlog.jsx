@@ -9,22 +9,8 @@ import { setBlog, setLoading } from "../redux/blogSlice";
 
 const UpdateBlog = () => {
   const editor = useRef(null);
-  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { blogId } = useParams();
-
-  const { blog, loading } = useSelector((store) => store.blog);
-
-  const [blogData, setBlogData] = useState({
-    title: "",
-    subtitle: "",
-    description: "",
-    category: "",
-    thumbnail: null,
-  });
-
-  const [previewThumbnail, setPreviewThumbnail] = useState("");
-  const [blogLoaded, setBlogLoaded] = useState(false);
+  const navigate = useNavigate();
 
   const config = useMemo(
     () => ({
@@ -34,66 +20,62 @@ const UpdateBlog = () => {
     []
   );
 
+  const { blogId } = useParams();
+  const { blog, loading } = useSelector((store) => store.blog);
+
+  // ✅ Safe find — blog array may be empty on first render
   const selectBlog = blog?.find((b) => b._id === blogId);
 
-  // Fetch blog if not present in Redux
+  // ✅ Fetch blog from API if not found in Redux store (e.g. on hard refresh)
   useEffect(() => {
-    const fetchBlog = async () => {
-      if (selectBlog) {
-        setBlogLoaded(true);
-        return;
-      }
-
-      try {
-        dispatch(setLoading(true));
-
-        console.log("Fetching blog:", blogId);
-
-        const res = await axios.get(
-          `http://localhost:8000/api/v1/blog/${blogId}`,
-          {
-            withCredentials: true,
+    if (!selectBlog) {
+      const fetchBlog = async () => {
+        try {
+          dispatch(setLoading(true));
+          const res = await axios.get(
+            `http://localhost:8000/api/v1/blog/${blogId}`,
+            { withCredentials: true }
+          );
+          if (res.data.success) {
+            dispatch(setBlog([res.data.blog]));
           }
-        );
-
-        console.log("API Response:", res.data);
-
-        if (res.data.success) {
-          dispatch(setBlog([res.data.blog]));
+        } catch (error) {
+          console.log(error);
+          toast.error("Failed to load blog. Please try again.");
+        } finally {
+          dispatch(setLoading(false));
         }
-      } catch (error) {
-        console.error("Fetch Blog Error:", error);
-
-        toast.error(
-          error?.response?.data?.message || "Failed to load blog"
-        );
-      } finally {
-        dispatch(setLoading(false));
-      }
-    };
-
-    fetchBlog();
-  }, [blogId, selectBlog, dispatch]);
-
-  // Populate form when blog is available
-  useEffect(() => {
-    if (selectBlog) {
-      setBlogData({
-        title: selectBlog.title || "",
-        subtitle: selectBlog.subtitle || "",
-        description: selectBlog.description || "",
-        category: selectBlog.category || "",
-        thumbnail: null,
-      });
-
-      setPreviewThumbnail(selectBlog.thumbnail || "");
-      setBlogLoaded(true);
+      };
+      fetchBlog();
     }
-  }, [selectBlog]);
+  }, [blogId]);
+
+  // ✅ Guard — must come BEFORE useState calls
+  if (!selectBlog) {
+    return (
+      <div className="pt-25 md:ml-[320px] flex min-h-screen items-center justify-center">
+        <div className="flex items-center gap-2 text-black dark:text-white">
+          <FaSpinner className="animate-spin" size={22} />
+          <span className="text-lg font-medium">Loading blog...</span>
+        </div>
+      </div>
+    );
+  };
+
+
+  const [blogData, setBlogData] = useState({
+    title: selectBlog.title,
+    subtitle: selectBlog.subtitle,
+    description: selectBlog.description,
+    category: selectBlog.category,
+  });
+
+  const [previewThumbnail, setPreviewThumbnail] = useState(
+    selectBlog.thumbnail
+  );
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     setBlogData((prev) => ({
       ...prev,
       [name]: value,
@@ -101,96 +83,55 @@ const UpdateBlog = () => {
   };
 
   const selectCategory = (value) => {
-    setBlogData((prev) => ({
-      ...prev,
-      category: value,
-    }));
+    setBlogData((prev) => ({ ...prev, category: value }));
   };
 
   const selectThumbnail = (e) => {
+    // ✅ Fixed: e.target.files (not e.target.file)
     const file = e.target.files?.[0];
-
-    if (!file) return;
-
-    setBlogData((prev) => ({
-      ...prev,
-      thumbnail: file,
-    }));
-
-    const reader = new FileReader();
-
-    reader.onloadend = () => {
-      setPreviewThumbnail(reader.result);
-    };
-
-    reader.readAsDataURL(file);
+    if (file) {
+      setBlogData((prev) => ({ ...prev, thumbnail: file }));
+      const fileReader = new FileReader();
+      fileReader.onloadend = () => setPreviewThumbnail(fileReader.result);
+      fileReader.readAsDataURL(file);
+    }
   };
 
   const updateBlogHandler = async () => {
+    console.log("Param id", blogId)
+    const formData = new FormData();
+    // ✅ Fixed: proper two-argument syntax with semicolons
+    formData.append("title", blogData.title);
+    formData.append("subtitle", blogData.subtitle);
+    formData.append("description", blogData.description);
+    formData.append("category", blogData.category);
+    if (blogData.thumbnail) {
+      formData.append("file", blogData.thumbnail);
+    }
+
     try {
       dispatch(setLoading(true));
-
-      const formData = new FormData();
-
-      formData.append("title", blogData.title);
-      formData.append("subtitle", blogData.subtitle);
-      formData.append("description", blogData.description);
-      formData.append("category", blogData.category);
-
-      if (blogData.thumbnail) {
-        formData.append("file", blogData.thumbnail);
-      }
-
+      // ✅ Fixed: axios (not LuChartNoAxesColumnIncreasing)
       const res = await axios.put(
         `http://localhost:8000/api/v1/blog/${blogId}`,
         formData,
         {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+          headers: { "Content-Type": "multipart/form-data" },
           withCredentials: true,
         }
       );
-
       if (res.data.success) {
-        toast.success(
-          res.data.message || "Blog updated successfully"
-        );
-
+        // ✅ Fixed: res.data.message (not the string "res.data.success")
+        toast.success(res.data.message || "Blog updated successfully!");
         navigate(-1);
       }
     } catch (error) {
-      console.error(error);
-
-      toast.error(
-        error?.response?.data?.message || "Failed to update blog"
-      );
+      console.log(error);
+      toast.error(error?.response?.data?.message || "Something went wrong.");
     } finally {
       dispatch(setLoading(false));
     }
   };
-
-  if (loading && !blogLoaded) {
-    return (
-      <div className="pt-25 md:ml-[320px] flex min-h-screen items-center justify-center">
-        <div className="flex items-center gap-2">
-          <FaSpinner className="animate-spin" size={22} />
-          <span>Loading blog...</span>
-        </div>
-      </div>
-    );
-  }
-
-  if (!loading && !selectBlog && blogLoaded === false) {
-    return (
-      <div className="pt-25 md:ml-[320px] flex min-h-screen items-center justify-center">
-        <h2 className="text-xl font-semibold text-red-500">
-          Blog not found
-        </h2>
-      </div>
-    );
-  }
-
 
   return (
     <div className="pt-25 md:ml-[320px]">
