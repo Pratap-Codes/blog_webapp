@@ -62,3 +62,25 @@ export const updateBlog = async(req, res) => {
         })
         }
 }
+export const getSingleBlog = async (req, res) => {
+  try {
+    const blog = await Blog.findById(req.params.blogId);
+
+    if (!blog) {
+      return res.status(404).json({
+        success: false,
+        message: "Blog not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      blog,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
