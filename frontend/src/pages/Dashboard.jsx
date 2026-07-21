@@ -5,11 +5,10 @@ import Profile from "./Profile";
 
 const Dashboard = () => {
   return (
-    <div className="flex bg-gray-200">
+    <div className="flex w-full">
       <ProfileSidebar />
-      <div className="flex-1">
+      <div className="flex-1 w-full min-w-0">
         <Outlet /> 
-        
       </div>
     </div>
   );

@@ -20,6 +20,7 @@ export const register = async (req, res) => {
         message: "Invalid email",
       });
     }
+    const normalizedEmail = email.trim().toLowerCase();
     if (password.length < 8) {
       console.log(password.length);
 
@@ -29,7 +30,7 @@ export const register = async (req, res) => {
       });
     }
 
-    const existingUserByEmail = await User.findOne({ email: email });
+    const existingUserByEmail = await User.findOne({ email: normalizedEmail });
     if (existingUserByEmail)
       return res.status(400).json({
         success: false,
@@ -40,7 +41,7 @@ export const register = async (req, res) => {
     await User.create({
       firstName,
       lastName,
-      email,
+      normalizedEmail,
       password: hashPassword,
     });
     return res.status(201).json({
@@ -65,7 +66,8 @@ export const login = async (req, res) => {
         message: "All fileds are required",
       });
     }
-    let user = await User.findOne({ email });
+    const normalizedEmail = email.trim().toLowerCase();
+    let user = await User.findOne({ email: normalizedEmail }).select("+password");
     if (!user) {
       return res.status(400).json({
         success: false,
@@ -80,14 +82,18 @@ export const login = async (req, res) => {
       });
     }
     const token = await jwt.sign({ userId: user._id }, process.env.SECRET_KEY, {
-      expiresIn: "1d",
+      expiresIn: "1h",
     });
+    user = user.toObject();
+    delete user.password;
+
     return res
       .status(200)
       .cookie("token", token, {
-        maxAge: 1 * 24 * 60 * 60 * 1000,
+        maxAge: 60 * 60 * 1000,
         httpOnly: true,
-        samSite: "strict",
+        sameSite: "strict",
+        secure: process.env.NODE_ENV === "production",
       })
       .json({
         success: true,
@@ -98,7 +104,7 @@ export const login = async (req, res) => {
     console.log(error);
     return res.status(500).json({
       success: false,
-      message: error.message,
+      message: "Something went wrong",
     });
   }
 };

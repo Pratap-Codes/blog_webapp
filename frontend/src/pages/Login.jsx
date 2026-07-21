@@ -1,11 +1,10 @@
-import axios from "axios";
 import React, { useState } from "react";
 import toast, { LoaderIcon } from "react-hot-toast";
 import { FaEye, FaEyeSlash, FaSpinner } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { setLoading, setUser } from "../redux/authSlice";
-import AuthImage from "../assets/auth.jpg"
+import { loginUser } from "../api/authApi";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -29,16 +28,7 @@ const Login = () => {
 
     try {
       dispatch(setLoading(true));
-      const res = await axios.post(
-        `http://localhost:8000/api/v1/user/login`,
-        input,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        },
-      );
+      const res = await loginUser(input)
       console.log("Response", res.data);
       if (res.data.success) {
         toast.success(res.data.message);
@@ -64,87 +54,95 @@ const Login = () => {
     }
   };
   return (
-    <div className="flex h-screen bg-gray-300 dark:bg-gray-950 md:pt-14">
-      {/* Left side image - hidden on mobile */}
-      <div className="hidden items-center justify-center lg:flex lg:flex-1">
-        <img src={AuthImage} className="h-full w-full object-cover" />
-      </div>
-
-      {/* Right side form - centered */}
-      <div className="flex flex-1 items-center justify-center px-4 md:px-0">
-        <form
-          onSubmit={handleSubmit}
-          className="h-[380px] w-full max-w-md space-y-3 rounded-2xl bg-white p-8 shadow-[0_1px_1px_rgba(0,0,0,0.05),0_4px_6px_rgba(34,42,53,0.04),0_24px_68px_rgba(47,48,55,0.05),0_2px_3px_rgba(0,0,0,0.04)]"
-        >
-          <div className="flex flex-col items-center space-y-4">
-            <h2 className="text-2xl font-medium">Login to your account</h2>
-            <h4 className="text-base">
-              Enter your details to login your account
-            </h4>
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-cyan-50 px-4 py-12 sm:px-6 lg:px-8 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800">
+      <div className="w-full max-w-md space-y-8 rounded-3xl bg-white/70 p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-xl dark:bg-gray-800/60 border border-white/20 dark:border-gray-700/50">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="flex flex-col items-center space-y-2 text-center">
+            <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
+              Welcome back
+            </h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              Enter your credentials to access your account
+            </p>
           </div>
 
-          <div className="space-y-1">
-            <p className="font-medium">Email</p>
-            <input
-              type="email"
-              id="email"
-              autoComplete="email"
-              name="email"
-              placeholder="Enter your email address"
-              className="w-full rounded-md border border-neutral-300 p-2"
-              value={input.email}
-              onChange={handleChange}
-              required
-              disabled={loading}
-            />
-          </div>
-          <div className="space-y-1">
-            <p className="font-medium">Password</p>
-            <div className="relative">
+          <div className="space-y-4">
+            <div>
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >
+                Email address
+              </label>
               <input
-                type={showPassword ? "text" : "password"}
-                name="password"
-                id="password"
-                autoComplete="current-password"
-                placeholder="Enter your password"
-                className="w-full rounded-md border border-neutral-300 p-2 pr-10"
-                value={input.password}
+                type="email"
+                id="email"
+                autoComplete="email"
+                name="email"
+                placeholder="you@example.com"
+                className="block w-full rounded-xl border border-gray-200 bg-white/50 px-4 py-3 text-sm outline-none transition-all focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 dark:border-gray-600 dark:bg-gray-700/50 dark:text-white dark:focus:border-indigo-400 placeholder:text-gray-400"
+                value={input.email}
                 onChange={handleChange}
                 required
                 disabled={loading}
               />
+            </div>
 
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer text-gray-500 transition hover:text-gray-700"
+            <div>
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
               >
-                {showPassword ? <FaEyeSlash /> : <FaEye />}
-              </button>
+                Password
+              </label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  id="password"
+                  autoComplete="current-password"
+                  placeholder="••••••••"
+                  className="block w-full rounded-xl border border-gray-200 bg-white/50 px-4 py-3 text-sm outline-none transition-all focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 dark:border-gray-600 dark:bg-gray-700/50 dark:text-white dark:focus:border-indigo-400 placeholder:text-gray-400 pr-10"
+                  value={input.password}
+                  onChange={handleChange}
+                  required
+                  disabled={loading}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 transition-colors hover:text-gray-600 dark:hover:text-gray-300"
+                >
+                  {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+                </button>
+              </div>
             </div>
           </div>
-          <div className="space-y-2">
+
+          <div className="pt-2">
             <button
               type="submit"
               disabled={loading}
-              className="w-full cursor-pointer rounded-lg bg-blue-600 p-2 text-xl text-white hover:bg-blue-600/90"
+              className="group relative flex w-full justify-center rounded-xl bg-indigo-600 px-4 py-3 text-sm font-semibold text-white transition-all hover:bg-indigo-500 hover:shadow-lg hover:shadow-indigo-500/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-70 disabled:hover:shadow-none"
             >
               {loading ? (
-                <div className="flex
-                items-center justify-center gap-2">
+                <div className="flex items-center gap-2">
                   <FaSpinner className="animate-spin" size={18} />
-                  <span>Please wait</span>
+                  <span>Signing in...</span>
                 </div>
               ) : (
-                "Login"
+                "Sign in"
               )}
             </button>
           </div>
-          <div className="flex items-center justify-center gap-2">
-            <p>Don't have an account? </p>
+
+          <div className="text-center text-sm pt-2">
+            <span className="text-gray-500 dark:text-gray-400">
+              Don't have an account?{" "}
+            </span>
             <Link
-              to={"/signup"}
-              className="underline transition-all duration-200 hover:text-gray-500"
+              to="/signup"
+              className="font-semibold text-indigo-600 transition-colors hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
             >
               Sign up
             </Link>

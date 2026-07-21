@@ -1,4 +1,16 @@
 @import "tailwindcss";
 
-
 @custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  .dark .jodit .jodit-wysiwyg,
+  .dark .jodit .jodit-wysiwyg p,
+  .dark .jodit .jodit-wysiwyg span,
+  .dark .jodit .jodit-wysiwyg li {
+    color: #000 !important;
+  }
+
+  .dark .jodit .jodit-wysiwyg {
+    caret-color: #000;
+  }
+}

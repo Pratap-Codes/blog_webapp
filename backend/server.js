@@ -1,8 +1,8 @@
 import express from "express"
 import dotenv from "dotenv"
 import connectDB from "./database/db.js"
-import userRoute from "./routes/user.route.js"
-import blogRoute from "./routes/blog.route.js"
+import userRoute from "./routes/userRoute.js"
+import blogRoute from "./routes/blogRoute.js"
 import  cors from 'cors'
 import cookieParser from "cookie-parser"
 

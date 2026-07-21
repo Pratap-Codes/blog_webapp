@@ -22,6 +22,7 @@ const blogSchema = new mongoose.Schema({
     category:{
         type:String
     },
+
     likes:[{type:mongoose.Schema.Types.ObjectId, ref:"User"}],
      comments:[{type:mongoose.Schema.Types.ObjectId, ref:"Comment"}],
      isPublished:{
