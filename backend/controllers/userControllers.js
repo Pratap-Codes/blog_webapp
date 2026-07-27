@@ -41,7 +41,7 @@ export const register = async (req, res) => {
     await User.create({
       firstName,
       lastName,
-      normalizedEmail,
+      email:normalizedEmail,
       password: hashPassword,
     });
     return res.status(201).json({
@@ -170,3 +170,21 @@ export const updateProfile = async (req, res) => {
     })
   }
 };
+
+export const getAllUsers = async( req, res) => {
+  try {
+    const users = await User.find().select("-password")  //this will exclude password
+    req.res.status(201).json({
+      success:true,
+      message:"User fetch successfull",
+      total:users.length,
+      users
+    })
+  } catch (error) {
+    console.log(error)
+    return res.status(501).json({
+      success:false,
+      message:"Error while fetching user image"
+    })
+  }
+}

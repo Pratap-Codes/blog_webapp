@@ -4,25 +4,6 @@ import cloudinary from "../utils/cloudinary.js";
 import getDataUri from "../utils/dataUri.js";
 import jwt from "jsonwebtoken";
 
-export const getAllBlogs = async (req, res) => {
-  try {
-    const blogs = await Blog.find({
-      description: { $exists: true, $ne: "" },
-      isPublished: true,
-    })
-      .populate({
-        path: "author",
-        select: "firstName lastName photoUrl",
-      })
-      .sort({ createdAt: -1 });
-    return res.status(200).json({ success: true, blogs });
-  } catch (error) {
-    console.log(error);
-    return res
-      .status(500)
-      .json({ message: "Error fetching blogs", error: error.message });
-  }
-};
 
 export const createBlog = async (req, res) => {
   try {
@@ -197,24 +178,17 @@ export const deleteBlog = async (req, res) => {
 export const getPublishedBlog = async (_, res) => {
   try {
     const blogs = await Blog.find({ isPublished: true })
-      .sort({ createdAt: -1 })
-      .populate({ path: "author", select: "firstName lastName photoUrl" });
-    if (!blogs) {
-      return res.status(401).json({
-        message: "Blog not found",
-        success: false,
-      });
-    }
-    return res.status(200).json({
-      success: true,
-      blogs,
-    });
+      .populate({
+        path: "author",
+        select: "firstName lastName photoUrl",
+      })
+      .sort({ createdAt: -1 });
+    return res.status(200).json({ success: true, blogs });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({
-      message: "Failed to get published blog",
-      success: false,
-    });
+    return res
+      .status(500)
+      .json({ message: "Error fetching blogs", error: error.message });
   }
 };
 

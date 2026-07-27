@@ -2,12 +2,12 @@ import multer from "multer"
 
 const storage = multer.memoryStorage()
 
-const fileFilter = (req, res, cb) =>{
-    const allowedTypes = ["images/jpeg", "image/png", "image/webp"];
+const fileFilter = (req, file, cb) =>{
+    const allowedTypes = ["image/jpeg","image/jpg", "image/png", "image/webp"];
     if(allowedTypes.includes((file.mimetype))){
         cb(null, true)
     }else{
-        cb(new error("Only JPEG, PNG and WEBP images are allowed"), false)
+        cb(new Error("Only JPEG, PNG and WEBP images are allowed"), false)
     }
 }
 export const singleUpload = multer({

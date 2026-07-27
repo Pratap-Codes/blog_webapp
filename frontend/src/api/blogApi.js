@@ -1,10 +1,10 @@
 import axiosInstance from "./axiosInstance";
 
 export const createBlog = (data) =>{
-    return axiosInstance.get("/blog/", data)
+    return axiosInstance.post("/blog/", data)
 }
-export const getAllBlogs = () =>{
-    return axiosInstance.get("/blog/all")
+export const getPublishedBlog = () =>{
+    return axiosInstance.get("/blog/get-published-blogs")
 }
 export const getOwnBlogs = () =>{
     return axiosInstance.get("/blog/get-own-blogs")
