@@ -145,7 +145,7 @@ const EditProfileDialog = ({ isOpen, onClose }) => {
                 onChange={changeFileHandler}
               />
             </label>
-            <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">JPG, GIF or PNG. Max size of 800K</p>
+            <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">JPG, JPEG, WEBP or PNG. Max size of 5 mb</p>
           </div>
         </div>
 

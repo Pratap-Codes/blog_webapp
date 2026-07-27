@@ -4,7 +4,7 @@ import { FaFacebook, FaGithub, FaInstagram, FaLinkedin, FaTwitter } from "react-
 
 const Footer = () => {
   return (
-    <footer className="mt-auto border-t border-white/20 bg-white/40 backdrop-blur-xl dark:border-gray-700/50 dark:bg-gray-900/40">
+    <footer className="mt-auto border-t border-gray-200/90 bg-white/55 shadow-[0_-1px_0_rgba(0,0,0,0.03)] backdrop-blur-xl dark:border-gray-700/50 dark:bg-gray-900/40 dark:shadow-none">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
         <div className="xl:grid xl:grid-cols-3 xl:gap-8">
           <div className="space-y-8 xl:col-span-1">

@@ -2,15 +2,7 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { setBlog } from '../redux/blogSlice'
-import { getAllBlogs } from '../api/blogApi'
-
-const getReadTime = (htmlContent) => {
-  if (!htmlContent) return "< 1 min read";
-  const text = htmlContent.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
-  const wordCount = text.split(" ").filter(Boolean).length;
-  const minutes = Math.ceil(wordCount / 200);
-  return minutes < 1 ? "< 1 min read" : `${minutes} min read`;
-};
+import { getPublishedBlog } from '../api/blogApi'
 
 const Blogs = () => {
   const { blog } = useSelector((store) => store.blog);
@@ -19,9 +11,9 @@ const Blogs = () => {
 
   // Fetch all published blogs on every mount (fixes the refresh issue)
   useEffect(() => {
-    const fetchAllBlogs = async () => {
+    const fetchPublishedBlog = async () => {
       try {
-        const res = await getAllBlogs()
+        const res = await getPublishedBlog()
         if (res.data.success) {
           dispatch(setBlog(res.data.blogs));
         }
@@ -29,14 +21,14 @@ const Blogs = () => {
         console.log(error);
       }
     };
-    fetchAllBlogs();
-  }, []);
+    fetchPublishedBlog();
+  }, [dispatch]);
 
   return (
     <div className="px-4 py-12 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       <div className="text-center mb-12">
         <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-5xl">
-          Latest <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-cyan-400">Articles</span>
+          Latest <span className="text-transparent bg-clip-text bg-linear-to-r from-indigo-500 to-cyan-400">Articles</span>
         </h1>
         <p className="mt-4 text-xl text-gray-500 dark:text-gray-400">
           Discover our newest insights, tutorials, and stories.
@@ -46,16 +38,16 @@ const Blogs = () => {
       {blog && blog.length > 0 ? (
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {blog.map((post) => (
-            <div 
-              key={post._id} 
+            <div
+              key={post._id}
               onClick={() => navigate(`/blogs/${post._id}`)}
               className="group cursor-pointer flex flex-col overflow-hidden rounded-3xl bg-white/70 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/20 dark:border-gray-700/50 dark:bg-gray-800/60"
             >
-              <div className="shrink-0 overflow-hidden aspect-[16/10]">
-                <img 
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" 
-                  src={post.thumbnail} 
-                  alt={post.title} 
+              <div className="shrink-0 overflow-hidden aspect-16/10">
+                <img
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  src={post.thumbnail}
+                  alt={post.title}
                 />
               </div>
               <div className="flex flex-1 flex-col justify-between p-6">
@@ -77,20 +69,20 @@ const Blogs = () => {
                   </div>
                 </div>
                 <div className="mt-6 flex items-center">
-                  <div className="flex-shrink-0">
-                    <img 
-                      className="h-10 w-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-800" 
-                      src={post.author?.photoUrl} 
-                      alt="" 
+                  <div className="shrink-0">
+                    <img
+                      className="h-10 w-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-800"
+                      src={post.author?.photoUrl}
+                      alt=""
                     />
                   </div>
                   <div className="ml-3">
                     <p className="text-sm font-medium text-gray-900 dark:text-white">
                       {post.author?.firstName} {post.author?.lastName}
                     </p>
-                    <div className="flex space-x-1 text-sm text-gray-500 dark:text-gray-400">
-                      <span>{getReadTime(post.description)}</span>
-                    </div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      1 min read
+                    </p>
                   </div>
                 </div>
               </div>

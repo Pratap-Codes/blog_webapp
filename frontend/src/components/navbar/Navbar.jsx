@@ -70,10 +70,10 @@ const Navbar = () => {
   ];
 
   return (
-    <div className="fixed top-0 z-50 w-full border-b border-white/20 bg-white/70 text-gray-800 shadow-[0_4px_30px_rgb(0,0,0,0.05)] backdrop-blur-xl dark:border-gray-700/50 dark:bg-gray-900/70 dark:text-gray-200 transition-all duration-300">
-      <div className="mx-auto my-3 flex h-10 w-full max-w-5xl items-center justify-between px-4 sm:px-6">
+    <div className="fixed top-0 left-0 right-0 z-50 w-full overflow-x-hidden border-b border-gray-200/90 bg-white/80 text-gray-800 shadow-[0_4px_24px_rgba(15,23,42,0.04)] backdrop-blur-xl dark:border-gray-700/50 dark:bg-gray-900/70 dark:text-gray-200 transition-all duration-300">
+      <div className="mx-auto my-3 flex h-10 w-full max-w-5xl min-w-0 items-center justify-between px-4 sm:px-6">
         {/* Logo section */}
-        <div className="flex items-center justify-center gap-2">
+        <div className="flex min-w-0 items-center justify-center gap-2">
           <Link to={"/"}>
             <img
               src={logo}
@@ -92,7 +92,7 @@ const Navbar = () => {
         </div>
 
         {/* Desktop Nav section */}
-        <nav className="hidden md:flex items-center gap-7">
+        <nav className="hidden lg:flex items-center gap-7">
           <ul className="flex items-center justify-center text-lg text-gray-900 gap-8 dark:text-white">
             {navItems.map((items) => (
               <Link
@@ -187,7 +187,7 @@ const Navbar = () => {
 
                     <div className="border-t border-gray-300 py-1 dark:border-gray-700">
                       <button
-                         onClick={logoutHandler}
+                        onClick={logoutHandler}
                         className="flex w-full cursor-pointer items-center gap-2 px-4 py-2 text-sm font-semibold text-red-500 hover:bg-red-50 dark:hover:bg-gray-800"
                       >
                         <CiLogout />
@@ -215,15 +215,15 @@ const Navbar = () => {
         </nav>
 
         {/* Mobile Nav Toggle */}
-        <div className="flex items-center gap-4 md:hidden">
+        <div className="flex items-center gap-4 lg:hidden">
           <button
             onClick={() => dispatch(toggleTheme())}
             className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl border border-gray-200 bg-white/50 text-gray-700 shadow-sm transition-all dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-300"
           >
             {theme === "light" ? <FaMoon size={16} /> : <FaSun size={16} />}
           </button>
-          
-          <button 
+
+          <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300"
           >
@@ -234,7 +234,7 @@ const Navbar = () => {
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-gray-200 dark:border-gray-700 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl absolute top-full left-0 w-full shadow-xl">
+        <div className="lg:hidden border-t border-gray-200 dark:border-gray-700 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl absolute top-full left-0 w-full shadow-xl">
           <div className="px-4 pt-2 pb-6 space-y-1 sm:px-3">
             {navItems.map((item) => (
               <Link
@@ -246,7 +246,7 @@ const Navbar = () => {
                 {item.name}
               </Link>
             ))}
-            
+
             {!user && (
               <div className="mt-6 flex flex-col gap-3 px-3">
                 <Link to={"/login"} onClick={() => setMobileMenuOpen(false)}>
@@ -261,11 +261,11 @@ const Navbar = () => {
                 </Link>
               </div>
             )}
-            
+
             {user && (
               <div className="mt-6 border-t border-gray-200 dark:border-gray-700 pt-6">
                 <div className="flex items-center px-3">
-                  <div className="flex-shrink-0">
+                  <div className="shrink-0">
                     <img className="h-10 w-10 rounded-full object-cover" src={user.photoUrl} alt="" />
                   </div>
                   <div className="ml-3">
